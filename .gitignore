@@ -14,3 +14,6 @@ target/
 
 # Local config
 local.properties
+
+#App is too big to add to github
+app/*.apk
