@@ -1,0 +1,16 @@
+# Maven
+target/
+
+# OS / editor
+.DS_Store
+*.log
+.idea/
+.vscode/
+*.iml
+
+# Appium artifacts (optional)
+*.png
+*.mp4
+
+# Local config
+local.properties
