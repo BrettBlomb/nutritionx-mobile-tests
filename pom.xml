@@ -4,19 +4,24 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.brett</groupId>
-  <artifactId>nutritionix-mobile-tests</artifactId>
+  <artifactId>nutritionx-mobile-tests</artifactId>
   <version>1.0.0</version>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+
     <junit.jupiter.version>5.10.2</junit.jupiter.version>
-    <appium.java.client.version>9.2.2</appium.java.client.version>
-    <selenium.version>4.21.0</selenium.version>
+
+    <!-- Compatible combo: Appium 7.x + Selenium 3.x -->
+    <appium.java.client.version>7.6.0</appium.java.client.version>
+    <selenium.version>3.141.59</selenium.version>
+
     <surefire.version>3.2.5</surefire.version>
   </properties>
 
   <dependencies>
+    <!-- JUnit 5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -24,6 +29,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Appium Java Client -->
     <dependency>
       <groupId>io.appium</groupId>
       <artifactId>java-client</artifactId>
@@ -31,6 +37,7 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Selenium (must be 3.141.59 for ContextAware + LocationContext) -->
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
@@ -50,6 +57,9 @@
           <includes>
             <include>**/*Test.java</include>
           </includes>
+          <!-- Show detailed test results -->
+          <printSummary>true</printSummary>
+          <reportFormat>plain</reportFormat>
         </configuration>
       </plugin>
     </plugins>

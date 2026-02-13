@@ -1,0 +1,65 @@
+name: Android Appium Tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * *" # daily 13:00 UTC
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Set up Node (Appium)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Appium + UiAutomator2
+        run: |
+          npm i -g appium
+          appium driver install uiautomator2
+          appium --version
+
+      - name: Verify APK exists
+        run: |
+          ls -la app || true
+          test -f app/Nutritionix.apk
+
+      - name: Start emulator + run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          emulator-options: -no-window -no-audio -no-snapshot -gpu swiftshader_indirect
+          disable-animations: true
+          script: |
+            adb devices
+            appium --base-path / --log-level info --relaxed-security --allow-cors &
+            sleep 5
+            curl -s http://127.0.0.1:4723/status || true
+            mvn test
+        env:
+          APPIUM_SERVER_URL: http://127.0.0.1:4723/
+          DEVICE_NAME: Android Emulator
+          APP_PATH: app/Nutritionix.apk
+          NUTRITIONIX_EMAIL: ${{ secrets.NUTRITIONIX_EMAIL }}
+          NUTRITIONIX_PASSWORD: ${{ secrets.NUTRITIONIX_PASSWORD }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-results
+          path: target/surefire-reports/*
